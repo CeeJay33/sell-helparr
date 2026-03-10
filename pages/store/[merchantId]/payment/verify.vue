@@ -1,11 +1,14 @@
 <template>
   <div class="verify-page">
     <div class="verify-page__card container">
-      <!-- Loading -->
+      <!-- Loading / Polling -->
       <div v-if="loading" class="verify-page__status">
         <div class="verify-page__spinner"></div>
         <h2>Verifying Payment...</h2>
         <p>Please wait while we confirm your payment.</p>
+        <p v-if="pollCount > 2" class="verify-page__subtitle">
+          Still checking... this may take a few seconds.
+        </p>
       </div>
 
       <!-- Success -->
@@ -50,6 +53,9 @@ const reference = computed(() => route.query.reference || route.query.trxref);
 const loading = ref(true);
 const paid = ref(false);
 const orderId = ref('');
+const pollCount = ref(0);
+const maxPolls = 20; // 20 attempts × 3 seconds = 60 seconds max wait
+let pollTimer = null;
 
 const verifyPayment = async () => {
   if (!reference.value) {
@@ -60,22 +66,55 @@ const verifyPayment = async () => {
   try {
     loading.value = true;
     const res = await $fetch(`${config.public.apiBase}/api/public/payment/verify/${reference.value}`);
+    
     if (res.success && res.data.paid) {
+      // Payment confirmed
+      stopPolling();
       paid.value = true;
       orderId.value = res.data.order_id;
+      loading.value = false;
+      return;
+    }
+    
+    // Payment not yet confirmed — start polling if not already
+    pollCount.value++;
+    
+    if (pollCount.value < maxPolls) {
+      // Keep loading state, poll again in 3 seconds
+      pollTimer = setTimeout(verifyPayment, 3000);
+    } else {
+      // Gave up after 60 seconds
+      loading.value = false;
     }
   } catch (e) {
     console.error('Verify error:', e);
-  } finally {
-    loading.value = false;
+    // On error, retry a few times before giving up
+    pollCount.value++;
+    if (pollCount.value < maxPolls) {
+      pollTimer = setTimeout(verifyPayment, 3000);
+    } else {
+      loading.value = false;
+    }
   }
 };
 
-const retryVerify = () => verifyPayment();
+const stopPolling = () => {
+  if (pollTimer) {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+};
+
+const retryVerify = () => {
+  pollCount.value = 0;
+  paid.value = false;
+  verifyPayment();
+};
 
 useHead({ title: 'Payment Verification — Helparr Sell' });
 
 onMounted(verifyPayment);
+onUnmounted(stopPolling);
 </script>
 
 <style scoped>
