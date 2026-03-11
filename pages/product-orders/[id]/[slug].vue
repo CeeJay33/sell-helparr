@@ -341,6 +341,7 @@
                     <span class="order-row__amount">₦{{ formatPriceAbbr(order.total) }}</span>
                     <span class="order-row__date">{{ formatDateShort(order.created_at) }}</span>
                   </div>
+                  <button class="order-row__view-btn" @click.stop="goToOrderDetail(order)">View</button>
                 </div>
                 <div v-if="orders.length === 0" class="orders-list__empty">
                   <p>{{ orderSearch ? 'No orders found for "' + orderSearch + '"' : 'No orders yet' }}</p>
@@ -664,9 +665,12 @@ function selectOrder(order) {
 
 function viewOrder(order) {
   activeTab.value = 'orders';
-  // Find in orders list
   const found = orders.value.find(o => o.id === order.id);
   if (found) selectedOrder.value = found;
+}
+
+function goToOrderDetail(order) {
+  navigateTo(`/product-orders/${storeId}/${storeSlug}/order/${order.order_number || order.id}`);
 }
 
 let searchTimeout = null;
@@ -912,6 +916,8 @@ body { font-family: var(--font); background: var(--color-bg); color: var(--color
 .order-row__right { text-align: right; }
 .order-row__amount { font-size: 14px; font-weight: 600; display: block; }
 .order-row__date { font-size: 11px; color: var(--color-text-muted); }
+.order-row__view-btn { padding: 5px 14px; border-radius: 8px; border: 1px solid var(--color-primary); background: none; color: var(--color-primary); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all 0.15s; flex-shrink: 0; }
+.order-row__view-btn:hover { background: var(--color-primary); color: white; }
 .orders-list__empty { text-align: center; padding: 40px 20px; color: var(--color-text-muted); }
 
 /* ═══ PAGINATION ═══ */
