@@ -749,7 +749,7 @@ body { font-family: var(--font); background: var(--color-bg); color: var(--color
 .portal-nav__user-info { display: flex; flex-direction: column; }
 .portal-nav__user-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
 .portal-nav__user-email { font-size: 11px; color: var(--color-text-muted); }
-.portal-nav__mobile-tabs { display: none; }
+.portal-nav__mobile-tabs { display: flex; }
 
 /* ═══ LOADING / ERROR ═══ */
 .portal-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; }
