@@ -672,7 +672,7 @@ function viewOrder(order) {
 }
 
 function goToOrderDetail(order) {
-  navigateTo(`/product-orders/${storeId}/order/${order.order_number || order.id}`);
+  navigateTo(`/product-orders/${storeId}/${storeSlug}/order/${order.order_number || order.id}`);
 }
 
 let searchTimeout = null;
