@@ -4,12 +4,12 @@
     <nav class="order-nav">
       <div class="order-nav__inner">
         <div class="order-nav__left">
-          <NuxtLink :to="`/product-orders/${storeId}/${storeSlug}`" class="order-nav__tab">Dashboard</NuxtLink>
-          <NuxtLink :to="`/product-orders/${storeId}/${storeSlug}`" class="order-nav__tab order-nav__tab--active" @click.native="setOrdersTab">
+          <NuxtLink :to="`/product-orders/${storeId}/${storeSlug}?tab=dashboard`" class="order-nav__tab">Dashboard</NuxtLink>
+          <NuxtLink :to="`/product-orders/${storeId}/${storeSlug}?tab=orders`" class="order-nav__tab order-nav__tab--active">
             Orders
             <span v-if="totalOrders" class="order-nav__badge">{{ totalOrders }}</span>
           </NuxtLink>
-          <NuxtLink :to="`/product-orders/${storeId}/${storeSlug}`" class="order-nav__tab" @click.native="setCustomersTab">Customers</NuxtLink>
+          <NuxtLink :to="`/product-orders/${storeId}/${storeSlug}?tab=customers`" class="order-nav__tab">Customers</NuxtLink>
         </div>
         <div class="order-nav__right" v-if="storeInfo">
           <img v-if="storeImageUrl" :src="storeImageUrl" class="order-nav__avatar" :alt="storeInfo.name">
@@ -346,7 +346,7 @@ onMounted(fetchOrder);
   --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --radius: 16px;
   --radius-sm: 10px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03);
+  --shadow: none;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -357,10 +357,11 @@ body { font-family: var(--font); background: var(--color-bg); color: var(--color
 /* ═══ NAV ═══ */
 .order-nav { background: var(--color-white); border-bottom: 1px solid var(--color-border); position: sticky; top: 0; z-index: 100; }
 .order-nav__inner { display: flex; align-items: center; justify-content: space-between; max-width: 1360px; margin: 0 auto; padding: 0 24px; height: 64px; }
-.order-nav__left { display: flex; align-items: center; gap: 8px; }
-.order-nav__tab { padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; color: var(--color-text-secondary); text-decoration: none; transition: all 0.2s; }
-.order-nav__tab--active { color: var(--color-primary); background: rgba(30, 58, 95, 0.08); font-weight: 600; }
-.order-nav__badge { background: var(--color-green); color: white; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px; }
+.order-nav__left { display: flex; align-items: center; gap: 2px; background: var(--color-bg); border-radius: 12px; padding: 4px; }
+.order-nav__tab { padding: 9px 22px; border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--color-text-muted); text-decoration: none; transition: all 0.2s; font-family: var(--font); }
+.order-nav__tab:hover { color: var(--color-text-secondary); }
+.order-nav__tab--active { color: var(--color-primary); background: var(--color-white); font-weight: 600; border: 1px solid var(--color-border); }
+.order-nav__badge { background: var(--color-green); color: white; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-left: 6px; }
 .order-nav__right { display: flex; align-items: center; gap: 10px; }
 .order-nav__avatar { width: 40px; height: 40px; border-radius: 12px; object-fit: cover; }
 .order-nav__avatar--placeholder { background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
@@ -385,7 +386,7 @@ body { font-family: var(--font); background: var(--color-bg); color: var(--color
 /* ═══ ORDER HEADER ═══ */
 .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
 .order-header__left { display: flex; align-items: center; gap: 12px; }
-.order-header__back { width: 40px; height: 40px; border-radius: 12px; background: var(--color-white); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--color-text); box-shadow: var(--shadow); transition: transform 0.15s; }
+.order-header__back { width: 40px; height: 40px; border-radius: 12px; background: var(--color-white); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--color-text);  transition: transform 0.15s; }
 .order-header__back:hover { transform: scale(1.05); }
 .order-header__title { font-size: 24px; font-weight: 800; color: var(--color-text); }
 .order-header__meta { display: flex; gap: 8px; margin-top: 6px; }
@@ -408,7 +409,7 @@ body { font-family: var(--font); background: var(--color-bg); color: var(--color
 .order-search__browse:hover { background: var(--color-primary); color: white; }
 
 /* ═══ ORDER CARD ═══ */
-.order-card { background: var(--color-white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 16px; }
+.order-card { background: var(--color-white); border-radius: var(--radius);  padding: 24px; margin-bottom: 16px; }
 .order-card__title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
 
 /* ═══ PRODUCTS TABLE ═══ */
@@ -492,6 +493,6 @@ body { font-family: var(--font); background: var(--color-bg); color: var(--color
   .products-table__qty-control { gap: 8px; padding: 4px 8px; }
   .order-card { padding: 16px; }
   .order-nav__inner { padding: 0 16px; }
-  .order-nav__tab { padding: 8px 14px; font-size: 13px; }
+  .order-nav__tab { padding: 7px 16px; font-size: 13px; }
 }
 </style>
