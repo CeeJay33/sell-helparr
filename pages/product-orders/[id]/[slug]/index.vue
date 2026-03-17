@@ -500,7 +500,7 @@ const customerSummary = ref({ total_customers: 0, total_revenue: 0, avg_order_va
 const customersPagination = ref({ page: 1, limit: 20, total: 0, pages: 0 });
 
 const storeName = computed(() => storeData.value?.name || storeSlug || 'Store');
-const storeImage = computed(() => getImageUrl(storeData.value?.image));
+const storeImage = computed(() => getImageUrl(`https://helparr.com/media/${storeData.value?.image}`));
 
 // Donut chart
 const chartSize = 180;
