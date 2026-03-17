@@ -422,7 +422,7 @@
         <div class="customers-grid">
           <div v-for="customer in customers" :key="customer.id" class="customer-card">
             <div class="customer-card__header">
-              <img v-if="getImageUrl(customer.avatar)" :src="getImageUrl(customer.avatar)" class="customer-card__avatar" :alt="customer.name">
+              <img v-if="getDjangoImageUrl(customer.avatar)" :src="getDjangoImageUrl(customer.avatar)" class="customer-card__avatar" :alt="customer.name">
               <div v-else class="customer-card__avatar customer-card__avatar--placeholder">{{ (customer.name || 'C').substring(0,2).toUpperCase() }}</div>
               <div class="customer-card__info">
                 <span class="customer-card__name">{{ customer.name }}</span>
@@ -500,7 +500,7 @@ const customerSummary = ref({ total_customers: 0, total_revenue: 0, avg_order_va
 const customersPagination = ref({ page: 1, limit: 20, total: 0, pages: 0 });
 
 const storeName = computed(() => storeData.value?.name || storeSlug || 'Store');
-const storeImage = computed(() => getImageUrl(`https://helparr.com/media/${storeData.value?.image}`));
+const storeImage = computed(() => getImageUrl(storeData.value?.image));
 
 // Donut chart
 const chartSize = 180;
@@ -577,6 +577,13 @@ function getImageUrl(image) {
   if (!image) return null;
   if (image.startsWith('http')) return image;
   return `${API_BASE}${image}`;
+}
+
+function getDjangoImageUrl(image) {
+  if (!image) return null;
+  if (image.startsWith('http')) return image;
+  const cleanPath = image.startsWith('/') ? image : '/' + image;
+  return `https://helparr.com/media${cleanPath}`;
 }
 
 function formatCurrency(amount) {
